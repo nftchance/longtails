@@ -15,8 +15,6 @@ from django.db import models
 # 12 hours
 SECONDS_BETWEEN_SYNC = 60 * 60 * 12
 
-NFTINSPECT_CURSOR = "jslur18NaRbkqTrnRlI_2"
-
 URLS = {
     "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
     "MEMBER": "https://www.nftinspect.xyz/_next/data/{0}/profiles/{1}.json",
@@ -67,11 +65,8 @@ class FreeMasonMember(models.Model):
             contract_address, token_id
         ), headers=headers)
 
-        print(response)
-
         if response.status_code == 200:
             response_data = response.json()
-            print(response_data['result'][0]['owner_of'])
             return response_data['result'][0]['owner_of']
 
         return ""
