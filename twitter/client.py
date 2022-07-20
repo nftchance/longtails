@@ -61,4 +61,4 @@ class TwitterClient:
 
     def get_retweets(self, user_id):
         response = self.handle_request(URLS["RETWEETS"].format(user_id))
-        return self.handle_response(response)    
+        return self.handle_response(response)
