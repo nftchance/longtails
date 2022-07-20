@@ -38,8 +38,20 @@ class FreeMasonMember(models.Model):
     followers = models.ManyToManyField(TwitterUser, related_name="followers")
     following = models.ManyToManyField(TwitterUser, related_name="following")
 
+    last_sync_at = models.DateTimeField(null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def needs_sync(self):
+        return False
+
+    def sync(self):
+        response = requests.get(URLS["MEMBER"].format(self.twitter.identifier))
+
+        if response.status_code == 200:
+            self.lasy_sync_at = django.utils.timezone.now()
 
 class FreeMasonProject(models.Model):
     def save(self, *args, **kwargs):

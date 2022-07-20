@@ -9,6 +9,11 @@ class FreeMasonsTestCase(TestCase):
         )
 
     def test_sync(self):
-        """ Can pull down collection members from data source"""
+        """ Pull down collection members from data source"""
         sync_response = self.project.sync()
         self.assertEqual(sync_response['status'], 200)
+        self.assertNotEqual(self.project.members.count(), 0)
+
+    def test_member_sync(self):
+        pass
+
