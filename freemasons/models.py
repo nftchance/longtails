@@ -2,6 +2,7 @@ import datetime
 import django
 import requests
 
+from django.conf import settings
 from django.db import models
 
 # Designed to support docs/social/freemason-frontrunning.md
@@ -14,10 +15,14 @@ from django.db import models
 # 12 hours
 SECONDS_BETWEEN_SYNC = 60 * 60 * 12
 
+NFTINSPECT_CURSOR = "jslur18NaRbkqTrnRlI_2"
+
 URLS = {
-    "MEMBER": "https://www.nftinspect.xyz/_next/data/pStzDgXUbiIiRh4GyEHcs/profiles/{0}.json",
+    "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
+    "MEMBER": "https://www.nftinspect.xyz/_next/data/{0}/profiles/{1}.json",
     "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false"
 }
+
 
 class TwitterUser(models.Model):
     identifier = models.CharField(max_length=256, null=True)
@@ -48,20 +53,39 @@ class FreeMasonMember(models.Model):
     def needs_sync(self):
         return False
 
-    def sync(self):
-        response = requests.get(URLS["MEMBER"].format(self.twitter.name))
+    def get_wallet(self):
+        headers = {
+            'accept': 'application/json',
+            'X-API-KEY': settings.MORALIS_API_KEY
+        }
+
+        token_split = self.twitter.token.split(':')
+        contract_address = token_split[1]
+        token_id = token_split[2]
+
+        response = requests.get(URLS["TOKEN_OWNER"].format(
+            contract_address, token_id
+        ), headers=headers)
+
+        print(response)
 
         if response.status_code == 200:
             response_data = response.json()
+            print(response_data['result'][0]['owner_of'])
+            return response_data['result'][0]['owner_of']
 
-            self.followers = response_data.followers
-            self.following = response_data.following
+        return ""
 
-            self.lasy_sync_at = django.utils.timezone.now()
-            self.save()
+    def sync(self):
+        self.wallet_address = self.get_wallet()
 
-            return {"status": 200}
-        return {"status": 500}
+        self.last_sync_at = django.utils.timezone.now()
+        self.save()
+
+        return {"status": 200}
+
+    ordering = ['-updated_at']
+
 
 class FreeMasonProject(models.Model):
     def save(self, *args, **kwargs):
