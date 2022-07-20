@@ -5,6 +5,8 @@ import requests
 from django.conf import settings
 from django.db import models
 
+from twitter.client import TwitterClient
+
 from .utils import needs_sync
 
 # Designed to support docs/social/freemason-frontrunning.md
@@ -72,8 +74,27 @@ class FreeMasonMember(models.Model):
 
         return ""
 
-    def sync(self):
+    def get_followers(self, twitter_client):
+        return twitter_client.get_followers(self.twitter.twitter_identifier)
+
+    def get_following(self, twitter_client):
+        return twitter_client.get_following(self.twitter.twitter_identifier)
+
+    def sync(self, twitter_client):
         self.wallet_address = self.get_wallet()
+
+        # add the twitter identifier to generalized twitter user
+        self.twitter.twitter_identifier = twitter_client.get_username_ids([self.twitter.username])
+
+        self.followers.clear()
+        for follower in self.get_followers(twitter_client):
+            follower_obj, created = TwitterUser.objects.get_or_create(twitter_identifier=follower['id'])
+            self.followers.add(follower_obj)
+            
+        self.following.clear()
+        for following in self.get_following(twitter_client):
+            following_obj, created = TwitterUser.objects.get_or_create(twitter_identifier=following['id'])
+            self.following.add(following_obj)
 
         self.last_sync_at = django.utils.timezone.now()
         self.save()
@@ -103,12 +124,20 @@ class FreeMasonProject(models.Model):
         if response.status_code == 200:
             response_data = response.json()
 
-            self.members.clear()
-            for member in response_data['members']:
-                member_twitter_obj, created = TwitterUser.objects.get_or_create(
-                    inspect_identifier=member['id'],
-                )
+            twitter_client = TwitterClient()
 
+            members = response_data['members'][:50]
+
+            member_usernames = [member['username'] for member in members]
+            member_twitter_ids = twitter_client.get_username_ids(member_usernames)
+
+            self.members.clear()
+            for i, member in enumerate(members):
+                member_twitter_obj, created = TwitterUser.objects.get_or_create(
+                    twitter_identifier=member_twitter_ids[i]['id'],
+                    inspect_identifier=member['id']
+                )
+                
                 member_twitter_obj.name = member['name']
                 member_twitter_obj.username = member['username']
                 member_twitter_obj.pfp_url = member['pfpUrl']

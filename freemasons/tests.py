@@ -19,9 +19,13 @@ class FreeMasonsTestCase(TestCase):
 
     def test_member_sync(self):
         """ Update the base level stats of a Member with its Twitter stats """
-        sync_response = self.project.members.first().sync()
+        sync_response = self.project.members.first().sync(self.twitter_client)
         self.assertEqual(sync_response['status'], 200)
 
-    def test_member_sync_wallet(self):
+    def test_member_wallet_synced(self):
         """ Make sure the wallet of the token owner was updated """
         self.assertNotEqual(self.project.members.filter(wallet_address__isnull=False).count(), 0)
+
+    def test_member_followers_synced(self):
+        pass
+        
