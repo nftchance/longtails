@@ -25,7 +25,3 @@ class FreeMasonsTestCase(TestCase):
     def test_member_sync_wallet(self):
         """ Make sure the wallet of the token owner was updated """
         self.assertNotEqual(self.project.members.filter(wallet_address__isnull=False).count(), 0)
-
-    # def test_twitter_followers(self):
-    #     print(self.twitter_client.get_friends("nftchance"))
-    #     self.assertEqual('', '') 

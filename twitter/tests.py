@@ -29,3 +29,9 @@ class TwitterClientTestCase(TestCase):
             len(self.client.get_likes("1355981457710329860")),
             0
         ) 
+    
+    def twitter_retweets(self):
+        self.assertNotEqual(
+            len(self.client.get_retweets("1430801656489332741")),
+            0
+        ) 

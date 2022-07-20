@@ -22,7 +22,8 @@ URLS = {
 
 
 class TwitterUser(models.Model):
-    identifier = models.CharField(max_length=256, null=True)
+    twitter_identifier = models.CharField(max_length=256, null=True)
+    inspect_identifier = models.CharField(max_length=256, null=True)
 
     name = models.CharField(max_length=256, null=True)
     username = models.CharField(max_length=256)
@@ -105,7 +106,7 @@ class FreeMasonProject(models.Model):
             self.members.clear()
             for member in response_data['members']:
                 member_twitter_obj, created = TwitterUser.objects.get_or_create(
-                    identifier=member['id'],
+                    inspect_identifier=member['id'],
                 )
 
                 member_twitter_obj.name = member['name']
