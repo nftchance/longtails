@@ -8,6 +8,13 @@ Right now there is an outsized opportunity in determining the future releases of
 
 There is profit to capture from VCs that have more wealth than sense. Turn the tables and make them enjoy the retail experience.
 
+## Workflow
+
+1. Get all the top collections of an NFT collection
+2. Keep track of the new accounts that they follow
+3. Build a summary of newly followed accounts
+4. Output the list of 'to watch' twitter accounts
+
 ## Functions
 
 The needed functionality of a following frontrunner would be best given human discretion. So, a simple rundown / spreadsheet that can be utilized for daily analysis is more than enough. Should just use [NFTInspect](http://nftinspect.xyz) to pull down the owners / followers of a brand. 
