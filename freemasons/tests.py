@@ -15,5 +15,8 @@ class FreeMasonsTestCase(TestCase):
         self.assertNotEqual(self.project.members.count(), 0)
 
     def test_member_sync(self):
-        pass
+        """ Update the base level stats of a Member with its Twitter stats"""
+        sync_response = self.project.members.first().sync()
+        self.assertEqual(sync_response['status'], 200)
 
+    

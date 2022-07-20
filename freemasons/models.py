@@ -15,6 +15,7 @@ from django.db import models
 SECONDS_BETWEEN_SYNC = 60 * 60 * 12
 
 URLS = {
+    "MEMBER": "https://www.nftinspect.xyz/_next/data/pStzDgXUbiIiRh4GyEHcs/profiles/{0}.json",
     "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false"
 }
 
@@ -48,10 +49,19 @@ class FreeMasonMember(models.Model):
         return False
 
     def sync(self):
-        response = requests.get(URLS["MEMBER"].format(self.twitter.identifier))
+        response = requests.get(URLS["MEMBER"].format(self.twitter.name))
 
         if response.status_code == 200:
+            response_data = response.json()
+
+            self.followers = response_data.followers
+            self.following = response_data.following
+
             self.lasy_sync_at = django.utils.timezone.now()
+            self.save()
+
+            return {"status": 200}
+        return {"status": 500}
 
 class FreeMasonProject(models.Model):
     def save(self, *args, **kwargs):
