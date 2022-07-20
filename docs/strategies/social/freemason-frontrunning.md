@@ -39,6 +39,7 @@ The members of a brand can be found at: [https://www.nftinspect.xyz/collections/
 #### `Project Spotlight Model`
 
 - `contract_address : String`
+- `members : (M2M) Project Member`
 
 - `created_at : DateTime`
 - `updated_at : DateTime`
