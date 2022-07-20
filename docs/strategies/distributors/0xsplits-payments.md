@@ -4,6 +4,8 @@
 
  Clone contracts receive payments and hold the funds until they are called to transfer the funds to the main contract.
 
+## Profit Mechanism 
+
 The distributors are incentivized to call distributeEth in the main contract which will transfer the funds from the clone contract to the main contract and also split the payment.
 
 But at this point, the funds are still held in the main contract (the contract has a mapping from recipient addresses to the balances). In order to actually receive the funds, users have to call the withdraw function in the main contract.
@@ -105,11 +107,11 @@ Stores the data of a transaction we care about.
 - `created_at : DateTime`
 - `updated_at : DateTime` 
 
-## 2. Machine API
+### 2. Machine API
 
 Constantly running clock that calls the Transaction API and checks if we have any transactions that have follow-up processing that is needed.
 
-### Running Transactions
+#### Running Transactions
 
 When a transaction is returned by the api, take the transaction, format the transactions with the rule provided in the transaction identifier.
 
