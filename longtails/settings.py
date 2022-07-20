@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'freemasons'
+    'freemasons',
+    'twitter'
 ]
 
 MIDDLEWARE = [
@@ -113,4 +114,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# MORALIS API
 MORALIS_API_KEY = str(os.environ.get("MORALIS_API_KEY"))
+
+# TWITTER API
+TWITTER_CONSUMER_API_KEY = os.environ.get("TWITTER_CONSUMER_API_KEY")
+TWITTER_CONSUMER_API_SECRET_KEY = os.environ.get("TWITTER_CONSUMER_API_SECRET_KEY")
+TWITTER_BEARER_TOKEN = os.environ.get("TWITTER_BEARER_TOKEN")
+TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN")
+TWITTER_SECRET_ACCESS_TOKEN = os.environ.get("TWITTER_SECRET_ACCESS_TOKEN")

@@ -57,11 +57,11 @@ The members of a brand can be found at: [https://www.nftinspect.xyz/collections/
 
 1. **Will the NFT Inspect API put up a fight?** 
 
-Probably. But they shouldn't make data publicly accessible if it isn't intended to be publicly accessible. There is no reason to consider this a hurdle.
+Nope.
 
 2. **How can we get approved by Twitter for API access?**
 
-Should not need to. This architecture is being used exactly to avoid any usage of Twitter beyond basic scraping as we do not want to have to deal with that.
+Should not need to.
 
 ## Summary
 

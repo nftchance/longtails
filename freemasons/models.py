@@ -37,8 +37,8 @@ class TwitterUser(models.Model):
 class FreeMasonMember(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if needs_sync(self.last_sync_at):
-            self.sync()
+        # if needs_sync(self.last_sync_at):
+        #     self.sync()
 
     twitter = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
     wallet_address = models.CharField(max_length=256)
