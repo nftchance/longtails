@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import TwitterUser, FreeMasonMember, FreeMasonProject
+
+admin.site.register(TwitterUser)
+admin.site.register(FreeMasonMember)
+admin.site.register(FreeMasonProject)

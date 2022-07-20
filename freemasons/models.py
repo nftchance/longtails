@@ -5,15 +5,14 @@ import requests
 from django.conf import settings
 from django.db import models
 
+from .utils import needs_sync
+
 # Designed to support docs/social/freemason-frontrunning.md
 # Create FreeMasonProject
 #       - From that time on Longtails will watch the follower records of
 #         holders of that project
 # Every 12 hours a clock runs to refresh the primary brand
 #       members (alpha generators)
-
-# 12 hours
-SECONDS_BETWEEN_SYNC = 60 * 60 * 12
 
 URLS = {
     "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
@@ -36,6 +35,11 @@ class TwitterUser(models.Model):
 
 
 class FreeMasonMember(models.Model):
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if needs_sync(self.last_sync_at):
+            self.sync()
+
     twitter = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
     wallet_address = models.CharField(max_length=256)
 
@@ -46,10 +50,6 @@ class FreeMasonMember(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    @property
-    def needs_sync(self):
-        return False
 
     def get_wallet(self):
         headers = {
@@ -85,7 +85,7 @@ class FreeMasonMember(models.Model):
 class FreeMasonProject(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.needs_sync:
+        if needs_sync(self.last_sync_at):
             self.sync()
 
     contract_address = models.CharField(max_length=256)
@@ -95,13 +95,6 @@ class FreeMasonProject(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    @property
-    def needs_sync(self):
-        if not self.last_sync_at:
-            return True
-
-        return self.last_sync_at - datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC) > django.utils.timezone.now()
 
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
