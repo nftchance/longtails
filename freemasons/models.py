@@ -82,6 +82,7 @@ class FreeMasonMember(models.Model):
     def handle_twitter_user(self, is_follower, twitter_user):
         twitter_user_obj, created = TwitterUser.objects.get_or_create(
             twitter_identifier=twitter_user['id'])
+        
         if twitter_user_obj.name != twitter_user['name'] or twitter_user_obj.username != twitter_user['username']:
             twitter_user_obj.name = twitter_user['name']
             twitter_user_obj.username = twitter_user['username']
@@ -109,7 +110,7 @@ class FreeMasonMember(models.Model):
 
         return {"status": 200}
 
-    ordering = ['-updated_at']
+    ordering = ['created_at']
 
 
 class FreeMasonProject(models.Model):
