@@ -18,6 +18,7 @@ class FreeMasonsTestCase(TestCase):
         self.assertNotEqual(self.project.members.count(), 0)
 
     def test_member_summary(self):
+        """ Make sure overlap is calculate correctly """
         twitter_user_one, created = TwitterUser.objects.get_or_create(twitter_identifier=1)
         twitter_user_two, created = TwitterUser.objects.get_or_create(twitter_identifier=2)
         twitter_user_three, created = TwitterUser.objects.get_or_create(twitter_identifier=3)
