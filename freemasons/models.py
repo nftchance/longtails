@@ -36,7 +36,6 @@ class TwitterUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
 class FreeMasonMember(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -80,21 +79,30 @@ class FreeMasonMember(models.Model):
     def get_following(self, twitter_client):
         return twitter_client.get_following(self.twitter.twitter_identifier)
 
+    def handle_twitter_user(self, is_follower, twitter_user):
+        twitter_user_obj, created = TwitterUser.objects.get_or_create(
+            twitter_identifier=twitter_user['id'])
+        if twitter_user_obj.name != twitter_user['name'] or twitter_user_obj.username != twitter_user['username']:
+            twitter_user_obj.name = twitter_user['name']
+            twitter_user_obj.username = twitter_user['username']
+            twitter_user_obj.save()
+
+        if is_follower:
+            self.followers.add(twitter_user_obj)
+        else:
+            self.following.add(twitter_user_obj)
+
     def sync(self, twitter_client):
         self.wallet_address = self.get_wallet()
 
-        # add the twitter identifier to generalized twitter user
-        self.twitter.twitter_identifier = twitter_client.get_username_ids([self.twitter.username])
-
         self.followers.clear()
-        for follower in self.get_followers(twitter_client):
-            follower_obj, created = TwitterUser.objects.get_or_create(twitter_identifier=follower['id'])
-            self.followers.add(follower_obj)
-            
         self.following.clear()
-        for following in self.get_following(twitter_client):
-            following_obj, created = TwitterUser.objects.get_or_create(twitter_identifier=following['id'])
-            self.following.add(following_obj)
+
+        followers = twitter_client.get_followers(self.twitter.twitter_identifier)
+        following = twitter_client.get_following(self.twitter.twitter_identifier)
+
+        for i, twitter_user in enumerate(followers + following):
+            self.handle_twitter_user(i < len(followers), twitter_user)
 
         self.last_sync_at = django.utils.timezone.now()
         self.save()
@@ -129,7 +137,8 @@ class FreeMasonProject(models.Model):
             members = response_data['members'][:50]
 
             member_usernames = [member['username'] for member in members]
-            member_twitter_ids = twitter_client.get_username_ids(member_usernames)
+            member_twitter_ids = twitter_client.get_username_ids(
+                member_usernames)
 
             self.members.clear()
             for i, member in enumerate(members):
@@ -137,7 +146,7 @@ class FreeMasonProject(models.Model):
                     twitter_identifier=member_twitter_ids[i]['id'],
                     inspect_identifier=member['id']
                 )
-                
+
                 member_twitter_obj.name = member['name']
                 member_twitter_obj.username = member['username']
                 member_twitter_obj.pfp_url = member['pfpUrl']
