@@ -17,7 +17,7 @@ class FreeMasonsTestCase(TestCase):
         self.assertEqual(sync_response['status'], 200)
         self.assertNotEqual(self.project.members.count(), 0)
 
-    def test_member_summary(self):
+    def test_member_follower_summary(self):
         """ Make sure overlap is calculate correctly """
         twitter_user_one, created = TwitterUser.objects.get_or_create(twitter_identifier=1)
         twitter_user_two, created = TwitterUser.objects.get_or_create(twitter_identifier=2)
@@ -33,6 +33,25 @@ class FreeMasonsTestCase(TestCase):
         member_two.followers.add(twitter_user_three) 
 
         summary = self.project.member_follower_summary
+
+        self.assertEqual(summary, [{'twitter_identifier': '3', 'count': 2}, {'twitter_identifier': '2', 'count': 1}, {'twitter_identifier': '1', 'count': 1}])
+
+    def test_member_following_summary(self):
+        """ Make sure overlap is calculate correctly """
+        twitter_user_one, created = TwitterUser.objects.get_or_create(twitter_identifier=1)
+        twitter_user_two, created = TwitterUser.objects.get_or_create(twitter_identifier=2)
+        twitter_user_three, created = TwitterUser.objects.get_or_create(twitter_identifier=3)
+
+        member_one = self.project.members.all()[0]
+        member_two = self.project.members.all()[1]
+
+        member_one.following.add(twitter_user_one)
+        member_two.following.add(twitter_user_two)
+
+        member_one.following.add(twitter_user_three)
+        member_two.following.add(twitter_user_three) 
+
+        summary = self.project.member_following_summary
 
         self.assertEqual(summary, [{'twitter_identifier': '3', 'count': 2}, {'twitter_identifier': '2', 'count': 1}, {'twitter_identifier': '1', 'count': 1}])
 
