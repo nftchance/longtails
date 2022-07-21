@@ -9,6 +9,8 @@ class FreeMasonsTestCase(TestCase):
             contract_address="0x23581767a106ae21c074b2276d25e5c3e136a68b"
         )
 
+        self.project.sync()
+
         self.twitter_client = TwitterClient()
 
     def test_sync(self):

@@ -14,14 +14,15 @@ from twitter.client import TwitterClient
 
 """
 Designed to support docs/social/freemason-frontrunning.md
-Create FreeMasonProject
+- Create FreeMasonProject
       - From that time on Longtails will watch the follower records of
         holders of that project
-Every 12 hours a clock runs to refresh the primary brand
+- Every 12 hours a clock runs to refresh the primary brand
       members and their followers and followings (alpha generators)
-We are dumping the historical records of their social network previous to
+- We are dumping the historical records of their social network previous to
       this period which means we are only considering the most recent
       follows of the audience at all times.
+- 
 """
 
 URLS = {
@@ -131,8 +132,8 @@ class FreeMasonMember(models.Model):
 class FreeMasonProject(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if needs_sync(self.last_sync_at):
-            self.sync()
+        # if needs_sync(self.last_sync_at):
+        #     self.sync()
 
     contract_address = models.CharField(max_length=256)
     members = models.ManyToManyField(FreeMasonMember)
