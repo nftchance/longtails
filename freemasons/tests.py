@@ -3,7 +3,6 @@ from django.test import TestCase
 from freemasons.models import FreeMasonProject
 from twitter.client import TwitterClient
 
-
 class FreeMasonsTestCase(TestCase):
     def setUp(self):
         self.project, self.created = FreeMasonProject.objects.get_or_create(
@@ -16,7 +15,6 @@ class FreeMasonsTestCase(TestCase):
         """ Pull down collection members from data source """
         sync_response = self.project.sync()
         self.assertEqual(sync_response['status'], 200)
-        print('Built', self.project.members.count(), 'members.')
         self.assertNotEqual(self.project.members.count(), 0)
 
     def test_member_sync(self):

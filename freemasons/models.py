@@ -1,15 +1,13 @@
-from django.db.models import Count
-from django.db.models import Count, OuterRef, Subquery
-import datetime
 import django
 import requests
 
 from django.conf import settings
 from django.db import models
-
-from twitter.client import TwitterClient
+from django.db.models import Count
 
 from .utils import needs_sync
+
+from twitter.client import TwitterClient
 
 """
 Designed to support docs/social/freemason-frontrunning.md
@@ -25,7 +23,6 @@ We are dumping the historical records of their social network previous to
 
 URLS = {
     "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
-    "MEMBER": "https://www.nftinspect.xyz/_next/data/{0}/profiles/{1}.json",
     "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false"
 }
 
@@ -138,19 +135,34 @@ class FreeMasonProject(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
-    def member_follower_summary(self):
-        field = 'twitter__username'
+    def member_summary(self, field):
+        search_field = 'twitter__username'
         overlap_field = 'overlap_count'
-        return [{
-            "username:": member[0],
-            "overlap_count": member[1]
-        } for member in self.members
-            .values(field)
-            .order_by(field)
-            .annotate(overlap_count=Count(field))
-            .order_by(f"-{overlap_field}")
-            .values_list(field, overlap_field)
-        ]
+
+        # TODO: NEED TO FIGURE OUT HOW TO COUNT THIS
+        
+        # for every member
+        #   for every follower / following member has
+        #       determine how many other references there are of this variable
+        
+        # determine how many times a twitter user is found in the followers/
+        # following of all members combined
+
+        # return [{
+        #     "username:": member[0],
+        #     "overlap_count": member[1]
+        # } for member in self.members
+        #     .values(field)
+        #     .order_by(field)
+        #     .annotate(overlap_count=Count(field))
+        #     .order_by(f"-{overlap_field}")
+        #     .values_list(field, overlap_field)
+        # ]
+ 
+
+    @property
+    def member_follower_summary(self):
+        return self.member_summary(field)
 
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
