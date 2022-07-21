@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from freemasons.models import FreeMasonProject
+from freemasons.models import FreeMasonProject, TwitterUser
 from twitter.client import TwitterClient
 
 class FreeMasonsTestCase(TestCase):
@@ -17,6 +17,24 @@ class FreeMasonsTestCase(TestCase):
         self.assertEqual(sync_response['status'], 200)
         self.assertNotEqual(self.project.members.count(), 0)
 
+    def test_member_summary(self):
+        twitter_user_one, created = TwitterUser.objects.get_or_create(twitter_identifier=1)
+        twitter_user_two, created = TwitterUser.objects.get_or_create(twitter_identifier=2)
+        twitter_user_three, created = TwitterUser.objects.get_or_create(twitter_identifier=3)
+
+        member_one = self.project.members.all()[0]
+        member_two = self.project.members.all()[1]
+
+        member_one.followers.add(twitter_user_one)
+        member_two.followers.add(twitter_user_two)
+
+        member_one.followers.add(twitter_user_three)
+        member_two.followers.add(twitter_user_three) 
+
+        summary = self.project.member_follower_summary
+
+        self.assertEqual(summary, [{'twitter_identifier': '3', 'count': 2}, {'twitter_identifier': '2', 'count': 1}, {'twitter_identifier': '1', 'count': 1}])
+
     def test_member_sync(self):
         """ Update the base level stats of a Member with its Twitter stats """
         member_obj = self.project.members.first()
@@ -28,9 +46,3 @@ class FreeMasonsTestCase(TestCase):
         self.assertNotEqual(member_obj.following.count(), 0)
         self.assertNotEqual(self.project.members.filter(
             wallet_address__isnull=False).count(), 0)
-
-    def test_member_summary(self):
-        """ Get the compiled results of the recent follows. """
-        summary = self.project.member_follower_summary
-        self.assertNotEqual(summary, [])
-        self.assertNotEqual(summary[0]['overlap_count'], 0)

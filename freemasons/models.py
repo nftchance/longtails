@@ -2,8 +2,10 @@ import django
 import requests
 
 from django.conf import settings
+from django.contrib.postgres.aggregates import JSONBAgg
 from django.db import models
-from django.db.models import Count
+from django.db.models import Q
+from django.db.models import Count, OuterRef, Subquery
 
 from .utils import needs_sync
 
@@ -134,35 +136,32 @@ class FreeMasonProject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    @property
-    def member_summary(self, field):
-        search_field = 'twitter__username'
-        overlap_field = 'overlap_count'
+    def member_summary(self, search_field):
+        twitter_user_filter = Q(**{f"{search_field}__isnull": False})
+        count_field = 'count'
 
-        # TODO: NEED TO FIGURE OUT HOW TO COUNT THIS
-        
-        # for every member
-        #   for every follower / following member has
-        #       determine how many other references there are of this variable
-        
-        # determine how many times a twitter user is found in the followers/
-        # following of all members combined
+        twitter_users = [
+            {
+                "twitter_identifier": member[0],
+                "count": member[1]
+            } for member in self.members
+                .filter(twitter_user_filter)
+                .values(search_field)
+                .order_by()
+                .annotate(count=Count(search_field))
+                .order_by(f'-{count_field}')
+                .values_list(search_field, count_field)
+        ]
 
-        # return [{
-        #     "username:": member[0],
-        #     "overlap_count": member[1]
-        # } for member in self.members
-        #     .values(field)
-        #     .order_by(field)
-        #     .annotate(overlap_count=Count(field))
-        #     .order_by(f"-{overlap_field}")
-        #     .values_list(field, overlap_field)
-        # ]
- 
+        return twitter_users
 
     @property
     def member_follower_summary(self):
-        return self.member_summary(field)
+        return self.member_summary('followers__twitter_identifier')
+
+    @property
+    def member_following_summary(self):
+        return self.member_summary('following__twitter_identifier')
 
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
