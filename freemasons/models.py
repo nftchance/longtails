@@ -1,5 +1,6 @@
 import django
 import requests
+import time
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import JSONBAgg
@@ -110,6 +111,11 @@ class FreeMasonMember(models.Model):
             self.twitter.twitter_identifier)
         following = twitter_client.get_following(
             self.twitter.twitter_identifier)
+        
+        # catch rate limit failures and recall this function after a timeout
+        if isinstance(followers, dict) or isinstance(following, dict):
+            time.sleep(4)
+            self.sync(twitter_client)
 
         for i, twitter_user in enumerate(followers + following):
             self.handle_twitter_user(i < len(followers), twitter_user)
