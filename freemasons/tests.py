@@ -16,6 +16,7 @@ class FreeMasonsTestCase(TestCase):
         """ Pull down collection members from data source """
         sync_response = self.project.sync()
         self.assertEqual(sync_response['status'], 200)
+        print('Built', self.project.members.count(), 'members.')
         self.assertNotEqual(self.project.members.count(), 0)
 
     def test_member_sync(self):
@@ -29,3 +30,9 @@ class FreeMasonsTestCase(TestCase):
         self.assertNotEqual(member_obj.following.count(), 0)
         self.assertNotEqual(self.project.members.filter(
             wallet_address__isnull=False).count(), 0)
+
+    def test_member_summary(self):
+        """ Get the compiled results of the recent follows. """
+        summary = self.project.member_follower_summary
+        self.assertNotEqual(summary, [])
+        self.assertNotEqual(summary[0]['overlap_count'], 0)

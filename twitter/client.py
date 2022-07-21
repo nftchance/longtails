@@ -1,4 +1,5 @@
 import requests
+import time
 
 from django.conf import settings
 
@@ -37,6 +38,8 @@ class TwitterClient:
         )
 
     def handle_response(self, response):
+        time.sleep(2)
+
         if response.status_code == 200:
             return response.json()['data']
 

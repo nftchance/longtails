@@ -1,3 +1,5 @@
+from django.db.models import Count
+from django.db.models import Count, OuterRef, Subquery
 import datetime
 import django
 import requests
@@ -9,12 +11,17 @@ from twitter.client import TwitterClient
 
 from .utils import needs_sync
 
-# Designed to support docs/social/freemason-frontrunning.md
-# Create FreeMasonProject
-#       - From that time on Longtails will watch the follower records of
-#         holders of that project
-# Every 12 hours a clock runs to refresh the primary brand
-#       members (alpha generators)
+"""
+Designed to support docs/social/freemason-frontrunning.md
+Create FreeMasonProject
+      - From that time on Longtails will watch the follower records of
+        holders of that project
+Every 12 hours a clock runs to refresh the primary brand
+      members and their followers and followings (alpha generators)
+We are dumping the historical records of their social network previous to
+      this period which means we are only considering the most recent
+      follows of the audience at all times.
+"""
 
 URLS = {
     "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
@@ -35,6 +42,7 @@ class TwitterUser(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
 
 class FreeMasonMember(models.Model):
     def save(self, *args, **kwargs):
@@ -82,7 +90,7 @@ class FreeMasonMember(models.Model):
     def handle_twitter_user(self, is_follower, twitter_user):
         twitter_user_obj, created = TwitterUser.objects.get_or_create(
             twitter_identifier=twitter_user['id'])
-        
+
         if twitter_user_obj.name != twitter_user['name'] or twitter_user_obj.username != twitter_user['username']:
             twitter_user_obj.name = twitter_user['name']
             twitter_user_obj.username = twitter_user['username']
@@ -99,8 +107,10 @@ class FreeMasonMember(models.Model):
         self.followers.clear()
         self.following.clear()
 
-        followers = twitter_client.get_followers(self.twitter.twitter_identifier)
-        following = twitter_client.get_following(self.twitter.twitter_identifier)
+        followers = twitter_client.get_followers(
+            self.twitter.twitter_identifier)
+        following = twitter_client.get_following(
+            self.twitter.twitter_identifier)
 
         for i, twitter_user in enumerate(followers + following):
             self.handle_twitter_user(i < len(followers), twitter_user)
@@ -127,6 +137,21 @@ class FreeMasonProject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def member_follower_summary(self):
+        field = 'twitter__username'
+        overlap_field = 'overlap_count'
+        return [{
+            "username:": member[0],
+            "overlap_count": member[1]
+        } for member in self.members
+            .values(field)
+            .order_by(field)
+            .annotate(overlap_count=Count(field))
+            .order_by(f"-{overlap_field}")
+            .values_list(field, overlap_field)
+        ]
+
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
 
@@ -135,7 +160,7 @@ class FreeMasonProject(models.Model):
 
             twitter_client = TwitterClient()
 
-            members = response_data['members'][:50]
+            members = response_data['members'][:100]
 
             member_usernames = [member['username'] for member in members]
             member_twitter_ids = twitter_client.get_username_ids(
