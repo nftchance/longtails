@@ -14,6 +14,7 @@ from twitter.client import TwitterClient
 
 """
 Designed to support docs/social/freemason-frontrunning.md
+
 - Create FreeMasonProject
       - From that time on Longtails will watch the follower records of
         holders of that project
@@ -22,7 +23,9 @@ Designed to support docs/social/freemason-frontrunning.md
 - We are dumping the historical records of their social network previous to
       this period which means we are only considering the most recent
       follows of the audience at all times.
-- 
+- The syncing of neither the project nor the members of a project are synced
+      upon save which means the clock is doing nothing more than calling
+      sync() on the project and each member.
 """
 
 URLS = {
@@ -138,6 +141,8 @@ class FreeMasonProject(models.Model):
     contract_address = models.CharField(max_length=256)
     members = models.ManyToManyField(FreeMasonMember)
 
+    members_spotlight_count = models.PositiveIntegerField(default=150)
+
     last_sync_at = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -178,7 +183,7 @@ class FreeMasonProject(models.Model):
 
             twitter_client = TwitterClient()
 
-            members = response_data['members'][:100]
+            members = response_data['members'][:self.members_spotlight_count]
 
             member_usernames = [member['username'] for member in members]
             member_twitter_ids = twitter_client.get_username_ids(

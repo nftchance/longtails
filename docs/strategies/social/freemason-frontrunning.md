@@ -61,7 +61,7 @@ Nope.
 
 2. **How can we get approved by Twitter for API access?**
 
-Should not need to.
+Just apply. Be generally obtuse about what you are doing with the API. Don't check any of the high-risk things on their application form. You will be using their data, so be sure to be honest, but do not offer information that is not needed.
 
 ## Summary
 
