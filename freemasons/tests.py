@@ -37,7 +37,7 @@ class FreeMasonsTestCase(TestCase):
         self.assertEqual(summary, [{'twitter_identifier': '3', 'count': 2}, {'twitter_identifier': '2', 'count': 1}, {'twitter_identifier': '1', 'count': 1}])
 
     def test_member_following_summary(self):
-        """ Make sure overlap is calculate correctly """
+        """ Make sure overlap is calculated correctly """
         twitter_user_one, created = TwitterUser.objects.get_or_create(twitter_identifier=1)
         twitter_user_two, created = TwitterUser.objects.get_or_create(twitter_identifier=2)
         twitter_user_three, created = TwitterUser.objects.get_or_create(twitter_identifier=3)

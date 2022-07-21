@@ -10,10 +10,10 @@ There is profit to capture from VCs that have more wealth than sense. Turn the t
 
 ## Workflow
 
-1. Get all the top collections of an NFT collection
-2. Keep track of the new accounts that they follow
-3. Build a summary of newly followed accounts
-4. Output the list of 'to watch' twitter accounts
+- [x] Get all the top collectors of an NFT collection
+- [x] Keep track of the new accounts that they follow
+- [x] Build a summary of newly followed accounts
+- [ ] Output the list of the most recent follow(er)s summary
 
 ## Functions
 
