@@ -136,7 +136,7 @@ class FreeMasonProject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def member_summary(self, search_field):
+    def _member_summary(self, search_field):
         twitter_user_filter = Q(**{f"{search_field}__isnull": False})
         count_field = 'count'
 
@@ -157,11 +157,11 @@ class FreeMasonProject(models.Model):
 
     @property
     def member_follower_summary(self):
-        return self.member_summary('followers__twitter_identifier')
+        return self._member_summary('followers__twitter_identifier')
 
     @property
     def member_following_summary(self):
-        return self.member_summary('following__twitter_identifier')
+        return self._member_summary('following__twitter_identifier')
 
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
