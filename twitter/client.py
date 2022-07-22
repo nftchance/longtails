@@ -37,8 +37,8 @@ class TwitterClient:
         )
 
     async def handle_response(self, response):
-        print('[Twitter Client] [Pausing] 15 Seconds.')
-        await asyncio.sleep(15)
+        print('[Twitter Client] [Pausing] 30 Seconds.')
+        await asyncio.sleep(30)
 
         if response.status_code == 200:
             return response.json()['data']
