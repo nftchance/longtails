@@ -130,3 +130,10 @@ DISCORD_GUILD_NAME = os.environ.get("DISCORD_GUILD_NAME")
 DISCORD_CHANNEL_NAME = os.environ.get("DISCORD_CHANNEL_NAME")
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 DISCORD_APPLICATION_ID = os.environ.get("DISCORD_APPLICATION_ID")
+
+PROD = os.environ.get("PROD", False)
+
+if PROD:
+    import dj_database_url
+
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
