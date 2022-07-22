@@ -1,12 +1,12 @@
+import datetime
 import django
 import requests
 import time
 
 from django.conf import settings
-from django.contrib.postgres.aggregates import JSONBAgg
 from django.db import models
 from django.db.models import Q
-from django.db.models import Count, OuterRef, Subquery
+from django.db.models import Count
 
 from .utils import needs_sync
 
@@ -33,6 +33,9 @@ URLS = {
     "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false"
 }
 
+# 12 hours
+SECONDS_BETWEEN_SYNC = 60 * 60 * 12
+
 
 class TwitterUser(models.Model):
     twitter_identifier = models.CharField(max_length=256, null=True)
@@ -49,21 +52,19 @@ class TwitterUser(models.Model):
 
 
 class FreeMasonMember(models.Model):
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # if needs_sync(self.last_sync_at):
-        #     self.sync()
-
     twitter = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
     wallet_address = models.CharField(max_length=256)
 
     followers = models.ManyToManyField(TwitterUser, related_name="followers")
     following = models.ManyToManyField(TwitterUser, related_name="following")
 
-    last_sync_at = models.DateTimeField(null=True)
+    next_sync_at = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.twitter.username
 
     def get_wallet(self):
         headers = {
@@ -115,16 +116,19 @@ class FreeMasonMember(models.Model):
             self.twitter.twitter_identifier)
         following = twitter_client.get_following(
             self.twitter.twitter_identifier)
-        
+
+        print('followers', followers, following)
+
         # catch rate limit failures and recall this function after a timeout
         if isinstance(followers, dict) or isinstance(following, dict):
-            time.sleep(4)
+            time.sleep(15)
             self.sync(twitter_client)
 
         for i, twitter_user in enumerate(followers + following):
             self.handle_twitter_user(i < len(followers), twitter_user)
 
-        self.last_sync_at = django.utils.timezone.now()
+        self.next_sync_at = django.utils.timezone.now() + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
+
         self.save()
 
         return {"status": 200}
@@ -133,20 +137,19 @@ class FreeMasonMember(models.Model):
 
 
 class FreeMasonProject(models.Model):
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # if needs_sync(self.last_sync_at):
-        #     self.sync()
-
     contract_address = models.CharField(max_length=256)
-    members = models.ManyToManyField(FreeMasonMember)
+    members = models.ManyToManyField(FreeMasonMember, blank=True)
 
-    members_spotlight_count = models.PositiveIntegerField(default=150)
+    members_spotlight_count = models.PositiveIntegerField(default=50)
+    watching = models.BooleanField(default=False)
 
-    last_sync_at = models.DateTimeField(null=True)
+    next_sync_at = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.contract_address
 
     def _member_summary(self, search_field):
         twitter_user_filter = Q(**{f"{search_field}__isnull": False})
@@ -157,12 +160,12 @@ class FreeMasonProject(models.Model):
                 "twitter_identifier": member[0],
                 "count": member[1]
             } for member in self.members
-                .filter(twitter_user_filter)
-                .values(search_field)
-                .order_by()
-                .annotate(count=Count(search_field))
-                .order_by(f'-{count_field}')
-                .values_list(search_field, count_field)
+            .filter(twitter_user_filter)
+            .values(search_field)
+            .order_by()
+            .annotate(count=Count(search_field))
+            .order_by(f'-{count_field}')
+            .values_list(search_field, count_field)
         ]
 
         return twitter_users
@@ -187,7 +190,8 @@ class FreeMasonProject(models.Model):
 
             member_usernames = [member['username'] for member in members]
             member_twitter_ids = twitter_client.get_username_ids(
-                member_usernames)
+                member_usernames
+            )
 
             self.members.clear()
             for i, member in enumerate(members):
@@ -208,7 +212,8 @@ class FreeMasonProject(models.Model):
 
                 self.members.add(member_obj)
 
-            self.last_sync_at = django.utils.timezone.now()
+            self.next_sync_at = django.utils.timezone.now() + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
+
             self.save()
 
             return {"status": 200}

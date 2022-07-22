@@ -28,22 +28,24 @@ class TwitterClient:
 
         self.headers = {
             'Authorization': f'Bearer {settings.TWITTER_BEARER_TOKEN}',
-            'Cookie': 'guest_id=v1%3A165835497646227262'
         }
 
     def handle_request(self, url):
+        print('handling request', url)
         return requests.get(
             url,
             headers=self.headers
         )
 
     def handle_response(self, response):
-        time.sleep(2)
+        print('handling response', response.json())
+
+        time.sleep(5)
 
         if response.status_code == 200:
             return response.json()['data']
 
-        return {}
+        return {} 
 
     def get_username_ids(self, usernames):
         response = self.handle_request(
