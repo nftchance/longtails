@@ -120,8 +120,6 @@ class FreeMasonMember(models.Model):
         following = twitter_client.get_following(
             self.twitter.twitter_identifier)
 
-        print('followers', followers, following)
-
         # catch rate limit failures and recall this function after a timeout
         if isinstance(followers, dict) or isinstance(following, dict):
             time.sleep(60)
