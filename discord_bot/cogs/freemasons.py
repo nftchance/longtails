@@ -128,7 +128,7 @@ class FreeMasons(commands.Cog):
  
         embed = discord.Embed(
             title=f"[Watching] Summary",
-            description="\n".join(project_obj.name for project_obj in projects.all())
+            description="\n".join(f"[{project_obj.name}]({project_obj.twitter})" for project_obj in projects.all())
         )
 
         await self.longtails_channel.send(embed=embed)
