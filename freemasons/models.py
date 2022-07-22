@@ -28,7 +28,8 @@ Designed to support docs/social/freemason-frontrunning.md
 
 URLS = {
     "TOKEN_OWNER": "https://deep-index.moralis.io/api/v2/nft/{0}/{1}/owners?chain=eth&format=decimal",
-    "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false"
+    "MEMBERS": "http://www.nftinspect.xyz/api/collections/members/{0}?limit=2000&onlyNewMembers=false",
+    "DETAILS": "https://www.nftinspect.xyz/api/collections/details/{0}"
 }
 
 # 12 hours
@@ -142,6 +143,13 @@ class FreeMasonProject(models.Model):
     members_spotlight_count = models.PositiveIntegerField(default=50)
     watching = models.BooleanField(default=False)
 
+    name = models.CharField(max_length=256, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    discord = models.CharField(max_length=256, blank=True, null=True)
+    twitter = models.CharField(max_length=256, blank=True, null=True)
+    opensea = models.CharField(max_length=256, blank=True, null=True)
+
     next_sync_at = models.DateTimeField(blank=True, null=True)
     last_summarized_at = models.DateTimeField(blank=True, null=True)
 
@@ -183,6 +191,20 @@ class FreeMasonProject(models.Model):
         return self._member_summary('following')
 
     def sync(self):
+        response = requests.get(URLS["DETAILS"].format(self.contract_address))
+        
+        if response.status_code == 200:
+            response_data = response.json()
+
+            self.name = response_data['name']
+            self.description = response_data['description']
+
+            self.discord = response_data['socials']['Discord']
+            self.twitter = response_data['socials']['Twitter']
+            self.opensea = response_data['socials']['Opensea']
+
+            self.save()
+
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
 
         if response.status_code == 200:

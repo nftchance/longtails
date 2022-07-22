@@ -36,7 +36,7 @@ class FreeMasons(commands.Cog):
 
     async def send_summary(self, title_key, project_obj, summary):
         embed = discord.Embed(
-            title=f"FREEMASONS {title_key} SUMMARY",
+            title=f"{project_obj.name} {title_key} Summary",
             description="\n".join(
                 [f"[{member_inst['username']}](https://twitter.com/i/user/{member_inst['twitter_identifier']}): {member_inst['count']}" for member_inst in summary])
         )
@@ -59,7 +59,7 @@ class FreeMasons(commands.Cog):
         for project_obj in projects.all():
             if not project_obj.next_sync_at or project_obj.next_sync_at < django.utils.timezone.now():
                 embed = discord.Embed(
-                    title=f"FREEMASONS SYNC"
+                    title=f"{project_obj.name} SYNC"
                 )
 
                 embed.add_field(
@@ -84,8 +84,8 @@ class FreeMasons(commands.Cog):
                 member.sync(self.twitter_client)
 
             if not project_obj.last_summarized_at or project_obj.last_summarized_at < django.utils.timezone.now() - datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC):
-                await self.send_summary('FOLLOWING', project_obj, project_obj.member_following_summary[:25])
-                await self.send_summary('FOLLOWER', project_obj, project_obj.member_follower_summary[:25])
+                await self.send_summary('Following', project_obj, project_obj.member_following_summary[:25])
+                await self.send_summary('Follower', project_obj, project_obj.member_follower_summary[:25])
 
                 project_obj.last_summarized_at = django.utils.timezone.now()
                 project_obj.save()
@@ -97,6 +97,9 @@ class FreeMasons(commands.Cog):
         )
 
         project_obj.watching = not project_obj.watching
+
+        if project_obj.watching:
+            project_obj.sync()
 
         project_obj.save()
 
