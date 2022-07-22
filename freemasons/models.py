@@ -224,7 +224,6 @@ class FreeMasonProject(models.Model):
             for i, member in enumerate(members):
                 member_twitter_obj, created = TwitterUser.objects.get_or_create(
                     twitter_identifier=member_twitter_ids[i]['id'],
-                    inspect_identifier=member['id']
                 )
 
                 member_twitter_obj.name = member['name']
