@@ -1,3 +1,5 @@
+import django_heroku
+import dj_database_url
 import os
 
 from dotenv import load_dotenv
@@ -119,7 +121,8 @@ MORALIS_API_KEY = str(os.environ.get("MORALIS_API_KEY"))
 
 # TWITTER API
 TWITTER_CONSUMER_API_KEY = os.environ.get("TWITTER_CONSUMER_API_KEY")
-TWITTER_CONSUMER_API_SECRET_KEY = os.environ.get("TWITTER_CONSUMER_API_SECRET_KEY")
+TWITTER_CONSUMER_API_SECRET_KEY = os.environ.get(
+    "TWITTER_CONSUMER_API_SECRET_KEY")
 TWITTER_BEARER_TOKEN = os.environ.get("TWITTER_BEARER_TOKEN")
 TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN")
 TWITTER_SECRET_ACCESS_TOKEN = os.environ.get("TWITTER_SECRET_ACCESS_TOKEN")
@@ -134,6 +137,7 @@ DISCORD_APPLICATION_ID = os.environ.get("DISCORD_APPLICATION_ID")
 PROD = os.environ.get("PROD", False)
 
 if PROD:
-    import dj_database_url
-
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
