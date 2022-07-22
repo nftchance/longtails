@@ -50,6 +50,9 @@ class TwitterUser(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.username
+
 
 class FreeMasonMember(models.Model):
     twitter = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
@@ -121,7 +124,7 @@ class FreeMasonMember(models.Model):
 
         # catch rate limit failures and recall this function after a timeout
         if isinstance(followers, dict) or isinstance(following, dict):
-            time.sleep(15)
+            time.sleep(60)
             self.sync(twitter_client)
 
         for i, twitter_user in enumerate(followers + following):
@@ -144,6 +147,7 @@ class FreeMasonProject(models.Model):
     watching = models.BooleanField(default=False)
 
     next_sync_at = models.DateTimeField(blank=True, null=True)
+    last_summarized_at = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -151,32 +155,36 @@ class FreeMasonProject(models.Model):
     def __str__(self):
         return self.contract_address
 
-    def _member_summary(self, search_field):
+    def _member_summary(self, search_prefix):
+        search_field = f"{search_prefix}__twitter_identifier"
+        username_field = f"{search_prefix}__username"
+
         twitter_user_filter = Q(**{f"{search_field}__isnull": False})
         count_field = 'count'
 
         twitter_users = [
             {
                 "twitter_identifier": member[0],
-                "count": member[1]
+                "username": member[1],
+                "count": member[2]
             } for member in self.members
             .filter(twitter_user_filter)
-            .values(search_field)
+            .values(search_field, username_field)
             .order_by()
             .annotate(count=Count(search_field))
             .order_by(f'-{count_field}')
-            .values_list(search_field, count_field)
+            .values_list(search_field, username_field, count_field)
         ]
 
         return twitter_users
 
     @property
     def member_follower_summary(self):
-        return self._member_summary('followers__twitter_identifier')
+        return self._member_summary('followers')
 
     @property
     def member_following_summary(self):
-        return self._member_summary('following__twitter_identifier')
+        return self._member_summary('following')
 
     def sync(self):
         response = requests.get(URLS["MEMBERS"].format(self.contract_address))
