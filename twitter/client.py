@@ -37,13 +37,13 @@ class TwitterClient:
         )
 
     async def handle_response(self, response):
-        print('holding for 60 seconds')
+        print('[Twitter Client] [Pausing] 60 Seconds.')
         await asyncio.sleep(60)
 
         if response.status_code == 200:
             return response.json()['data']
 
-        print('handling response', response.json())
+        print('[Twitter Client] [Error]', response.json())
         return {} 
 
     async def get_username_ids(self, usernames):

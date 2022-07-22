@@ -105,7 +105,7 @@ class FreeMasons(commands.Cog):
         project_obj.save()
 
         embed = discord.Embed(
-            title=f"{project_obj.name} WATCH UPDATE"
+            title=f"[Watching] {project_obj.name}"
         )
 
         embed.add_field(name="CONTRACT", value=contract_address)
@@ -117,7 +117,7 @@ class FreeMasons(commands.Cog):
 
         await self.longtails_channel.send(embed=embed)
 
-        return
+        await interaction.response.send_message("Watch status updated!", ephemeral=True)
 
 
 async def setup(bot: commands.Bot) -> None:
