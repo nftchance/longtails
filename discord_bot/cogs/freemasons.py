@@ -36,7 +36,7 @@ class FreeMasons(commands.Cog):
 
     async def send_summary(self, title_key, project_obj, summary):
         embed = discord.Embed(
-            title=f"{project_obj.name} {title_key} Summary",
+            title=f"[{title_key}] {project_obj.name}",
             description="\n".join(
                 [f"[{member_inst['username']}](https://twitter.com/i/user/{member_inst['twitter_identifier']}): {member_inst['count']}" for member_inst in summary])
         )
@@ -50,7 +50,7 @@ class FreeMasons(commands.Cog):
 
     @tasks.loop(seconds=60)
     async def sync_projects(self):
-        print("[FreeMasons] Syncing projects.")
+        print("[FreeMasons] [Sync] Clock.")
 
         projects = FreeMasonProject.objects.filter(
             watching=True,
@@ -58,8 +58,9 @@ class FreeMasons(commands.Cog):
 
         for project_obj in projects.all():
             if not project_obj.next_sync_at or project_obj.next_sync_at < django.utils.timezone.now():
+                print(f'[FreeMasons] [Sync] [Project] {project_obj.contract_address}')
                 embed = discord.Embed(
-                    title=f"{project_obj.name} SYNC"
+                    title=f"[SYNCING] {project_obj.name}"
                 )
 
                 embed.add_field(
@@ -75,13 +76,13 @@ class FreeMasons(commands.Cog):
 
                 await self.longtails_channel.send(embed=embed)
 
-                project_obj.sync()
+                await project_obj.sync()
 
             for member in project_obj.members.filter(
                 next_sync_at__lte=django.utils.timezone.now()
             ) | project_obj.members.filter(next_sync_at__isnull=True):
-                print(f'[FreeMasons] {member.twitter.username}')
-                member.sync(self.twitter_client)
+                print(f'[FreeMasons] [Sync] [Member] {member.twitter.username}')
+                await member.sync(self.twitter_client)
 
             if not project_obj.last_summarized_at or project_obj.last_summarized_at < django.utils.timezone.now() - datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC):
                 await self.send_summary('Following', project_obj, project_obj.member_following_summary[:25])
@@ -99,12 +100,12 @@ class FreeMasons(commands.Cog):
         project_obj.watching = not project_obj.watching
 
         if project_obj.watching:
-            project_obj.sync()
+            await project_obj.sync()
 
         project_obj.save()
 
         embed = discord.Embed(
-            title=f"FREEMASONS WATCH UPDATE"
+            title=f"{project_obj.name} WATCH UPDATE"
         )
 
         embed.add_field(name="CONTRACT", value=contract_address)

@@ -1,6 +1,5 @@
 import asyncio
 import requests
-import time
 
 from django.conf import settings
 
@@ -37,8 +36,9 @@ class TwitterClient:
             headers=self.headers
         )
 
-    def handle_response(self, response):
-        time.sleep(60)
+    async def handle_response(self, response):
+        print('holding for 60 seconds')
+        await asyncio.sleep(60)
 
         if response.status_code == 200:
             return response.json()['data']
@@ -46,23 +46,23 @@ class TwitterClient:
         print('handling response', response.json())
         return {} 
 
-    def get_username_ids(self, usernames):
+    async def get_username_ids(self, usernames):
         response = self.handle_request(
             URLS["USERNAMES_TO_ID"].format(','.join(usernames)))
-        return self.handle_response(response)
+        return await self.handle_response(response)
 
-    def get_followers(self, user_id):
+    async def get_followers(self, user_id):
         response = self.handle_request(URLS["FOLLOWERS"].format(user_id))
-        return self.handle_response(response)
+        return await self.handle_response(response)
 
-    def get_following(self, user_id):
+    async def get_following(self, user_id):
         response = self.handle_request(URLS["FOLLOWING"].format(user_id))
-        return self.handle_response(response)
+        return await self.handle_response(response)
 
-    def get_likes(self, user_id):
+    async def get_likes(self, user_id):
         response = self.handle_request(URLS["LIKES"].format(user_id))
-        return self.handle_response(response)
+        return await self.handle_response(response)
 
-    def get_retweets(self, user_id):
+    async def get_retweets(self, user_id):
         response = self.handle_request(URLS["RETWEETS"].format(user_id))
-        return self.handle_response(response)
+        return await self.handle_response(response)

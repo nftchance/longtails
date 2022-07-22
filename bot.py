@@ -8,7 +8,7 @@ os.environ.setdefault('DJANGO_ALLOW_ASYNC_UNSAFE', "true")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "longtails.settings")
 django.setup()
 
-# exec(open('discord_bot/bot.py').read())
+# exec(open('bot.py').read())
 
 from django.conf import settings
 

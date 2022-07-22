@@ -89,11 +89,11 @@ class FreeMasonMember(models.Model):
 
         return ""
 
-    def get_followers(self, twitter_client):
-        return twitter_client.get_followers(self.twitter.twitter_identifier)
+    async def get_followers(self, twitter_client):
+        return await twitter_client.get_followers(self.twitter.twitter_identifier)
 
-    def get_following(self, twitter_client):
-        return twitter_client.get_following(self.twitter.twitter_identifier)
+    async def get_following(self, twitter_client):
+        return await twitter_client.get_following(self.twitter.twitter_identifier)
 
     def handle_twitter_user(self, is_follower, twitter_user):
         twitter_user_obj, created = TwitterUser.objects.get_or_create(
@@ -109,21 +109,21 @@ class FreeMasonMember(models.Model):
         else:
             self.following.add(twitter_user_obj)
 
-    def sync(self, twitter_client):
-        self.wallet_address = self.get_wallet()
+    async def sync(self, twitter_client):
+        if self.twitter.token:
+            self.wallet_address = self.get_wallet()
 
         self.followers.clear()
         self.following.clear()
 
-        followers = twitter_client.get_followers(
+        followers = await twitter_client.get_followers(
             self.twitter.twitter_identifier)
-        following = twitter_client.get_following(
+        following = await twitter_client.get_following(
             self.twitter.twitter_identifier)
 
         # catch rate limit failures and recall this function after a timeout
         if isinstance(followers, dict) or isinstance(following, dict):
-            time.sleep(30)
-            self.sync(twitter_client)
+            await self.sync(twitter_client)
 
         for i, twitter_user in enumerate(followers + following):
             self.handle_twitter_user(i < len(followers), twitter_user)
@@ -191,7 +191,7 @@ class FreeMasonProject(models.Model):
     def member_following_summary(self):
         return self._member_summary('following')
 
-    def sync(self):
+    async def sync(self):
         response = requests.get(URLS["DETAILS"].format(self.contract_address))
         
         if response.status_code == 200:
@@ -216,7 +216,7 @@ class FreeMasonProject(models.Model):
             members = response_data['members'][:50]
 
             member_usernames = [member['username'] for member in members]
-            member_twitter_ids = twitter_client.get_username_ids(
+            member_twitter_ids = await twitter_client.get_username_ids(
                 member_usernames
             )
 
