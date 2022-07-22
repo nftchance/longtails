@@ -96,8 +96,10 @@ class FreeMasonMember(models.Model):
         return await twitter_client.get_following(self.twitter.twitter_identifier)
 
     def handle_twitter_user(self, is_follower, twitter_user):
-        twitter_user_obj, created = TwitterUser.objects.get_or_create(
-            twitter_identifier=twitter_user['id'])
+        if TwitterUser.objects.filter(twitter_identifier=twitter_user['id']).exists():
+            twitter_user_obj = TwitterUser.objects.filter(twitter_identifier=twitter_user['id']).first()
+        else:
+            twitter_user_obj = TwitterUser.objects.create(twitter_identifier=twitter_user['id'])
 
         if twitter_user_obj.name != twitter_user['name'] or twitter_user_obj.username != twitter_user['username']:
             twitter_user_obj.name = twitter_user['name']
@@ -222,9 +224,10 @@ class FreeMasonProject(models.Model):
 
             self.members.clear()
             for i, member in enumerate(members):
-                member_twitter_obj, created = TwitterUser.objects.get_or_create(
-                    twitter_identifier=member_twitter_ids[i]['id'],
-                )
+                if TwitterUser.objects.filter(twitter_identifier=member_twitter_ids[i]['id']).exists():
+                    member_twitter_obj = TwitterUser.objects.filter(twitter_identifier=member_twitter_ids[i]['id']).first()
+                else:
+                    member_twitter_obj = TwitterUser.objects.create(twitter_identifier=member_twitter_ids[i]['id'])
 
                 member_twitter_obj.name = member['name']
                 member_twitter_obj.username = member['username']
