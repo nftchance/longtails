@@ -233,7 +233,7 @@ class FreeMasonProject(models.Model):
                 member_twitter_obj.save()
 
                 member_obj, created = FreeMasonMember.objects.get_or_create(
-                    twitter=member_twitter_obj,
+                    twitter=member_twitter_obj
                 )
 
                 self.members.add(member_obj)
