@@ -212,7 +212,7 @@ class FreeMasonProject(models.Model):
 
             twitter_client = TwitterClient()
 
-            members = response_data['members'][:self.members_spotlight_count]
+            members = response_data['members'][:50]
 
             member_usernames = [member['username'] for member in members]
             member_twitter_ids = twitter_client.get_username_ids(
