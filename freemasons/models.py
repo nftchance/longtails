@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import django
 import requests
@@ -121,7 +122,7 @@ class FreeMasonMember(models.Model):
 
         # catch rate limit failures and recall this function after a timeout
         if isinstance(followers, dict) or isinstance(following, dict):
-            time.sleep(30)
+            asyncio.sleep(30)
             self.sync(twitter_client)
 
         for i, twitter_user in enumerate(followers + following):
