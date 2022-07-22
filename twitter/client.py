@@ -37,13 +37,11 @@ class TwitterClient:
         )
 
     def handle_response(self, response):
-
-        time.sleep(5)
-
         if response.status_code == 200:
             return response.json()['data']
 
         print('handling response', response.json())
+        time.sleep(30)
         return {} 
 
     def get_username_ids(self, usernames):
