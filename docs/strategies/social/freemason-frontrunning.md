@@ -13,7 +13,7 @@ There is profit to capture from VCs that have more wealth than sense. Turn the t
 - [x] Get all the top collectors of an NFT collection
 - [x] Keep track of the new accounts that they follow
 - [x] Build a summary of newly followed accounts
-- [ ] Output the list of the most recent follow(er)s summary
+- [x] Output the list of the most recent follow(er)s summary
 
 ## Functions
 

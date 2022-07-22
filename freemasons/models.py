@@ -8,8 +8,6 @@ from django.db import models
 from django.db.models import Q
 from django.db.models import Count
 
-from .utils import needs_sync
-
 from twitter.client import TwitterClient
 
 """
