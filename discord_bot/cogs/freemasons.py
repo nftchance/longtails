@@ -93,6 +93,8 @@ class FreeMasons(commands.Cog):
 
     @app_commands.command(name="watch")
     async def watch(self, interaction: discord.Interaction, contract_address: str) -> None:
+        await interaction.response.send_message("Updating status.", ephemeral=True)
+
         project_obj, created = FreeMasonProject.objects.get_or_create(
             contract_address=contract_address
         )
@@ -117,7 +119,19 @@ class FreeMasons(commands.Cog):
 
         await self.longtails_channel.send(embed=embed)
 
-        await interaction.response.send_message("Watch status updated!", ephemeral=True)
+
+    @app_commands.command(name="watching")
+    async def watching(self, interaction: discord.Interaction) -> None:
+        await interaction.response.send_message("Logging statuses.", ephemeral=True)
+
+        projects = FreeMasonProject.objects.filter(watching=True)
+ 
+        embed = discord.Embed(
+            title=f"[Watching] Summary",
+            description="\n".join(project_obj.name for project_obj in projects.all())
+        )
+
+        await self.longtails_channel.send(embed=embed)
 
 
 async def setup(bot: commands.Bot) -> None:
