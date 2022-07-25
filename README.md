@@ -43,4 +43,4 @@ To get your keys for Discord, you need to create a bot and get all the needed to
 
 ### Deploying To Heroku
 
-https://heroku.com/deploy?template=https://github.com/heroku/node-js-getting-started/tree/main
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
