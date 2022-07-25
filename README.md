@@ -19,7 +19,7 @@ Longtails is focused on one thing, extracting maximum value from long-tail oppor
 
 Longtails is designed to easily get up and running. Just click the button below to deploy to Heroku. Then all you have to do is setup the environment variables in the Settings pane.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
 
 ### Running In Dev
 
