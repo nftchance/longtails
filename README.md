@@ -13,11 +13,23 @@ Longtails is focused on one thing, extracting maximum value from long-tail oppor
 
 ## Running The System
 
+## Inviting The Bot
 
+The communication system of Longtails is built on Discord. To get started, head to the Discord Developer portal and create the bot. Make sure that you give the bot permissions to a `bot` and `commands` like so:
+
+When logged in and with your bot created, go to OAuth2 -> URL Generator and select `bot` and `applications.commands` For ease, just give it admin permissions. 
+
+![Creating the url for your Discord bot](static/images/bot-setup.png)
+
+> If you don't trust the usage of it, I recommend going and reading the code.
+
+Just copy and paste the generated url into your browser, and invite the bot your server. With that done, you are ready to proceed.
 
 ### Runing In Production
 
 Longtails is designed to easily get up and running. Just click the button below to deploy to Heroku. Then all you have to do is setup the environment variables in the Settings pane.
+
+
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
 

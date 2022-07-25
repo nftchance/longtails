@@ -60,11 +60,11 @@
 			"value": 12
 		},
 		"PROD": {
-			"description": "Controls usage of database. Leave as true.",
+			"description": "Controls usage of database. (Leave as true.)",
 			"value": true
 		},
 		"DISABLE_COLLECTSTATIC": {
-			"description": "Keeps your server from storing things not needed.",
+			"description": "Keeps your server from storing things not needed. (Leave as 1.)",
 			"value": 1
 		}
 	}
