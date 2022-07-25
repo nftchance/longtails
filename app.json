@@ -2,6 +2,6 @@
     "name": "Longtails",
     "description": "A Web3-focused bot chasing longtail strategies.",
     "repository": "https://github.com/nftchance/longtails",
-    "logo": "https://raw.githubusercontent.com/nftchance/longtails/main/longtails.png",
+    "logo": "https://raw.githubusercontent.com/nftchance/longtails/main/static/images/logo.png",
     "keywords": ["django", "discord", "web3", "longtail", "mev"]
   }
