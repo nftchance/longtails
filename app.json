@@ -59,7 +59,13 @@
 			"description": "Hours between sync of Free Mason collections.",
 			"value": 12
 		},
-		"PROD": true,
-		"DISABLE_COLLECTSTATIC": 1
+		"PROD": {
+			"description": "Controls usage of database. Leave as true.",
+			"value": true
+		},
+		"DISABLE_COLLECTSTATIC": {
+			"description": "Keeps your server from storing things not needed.",
+			"value": 1
+		}
 	}
 }
