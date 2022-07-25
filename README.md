@@ -19,7 +19,7 @@ Longtails is focused on one thing, extracting maximum value from long-tail oppor
 
 Longtails is designed to easily get up and running. Just click the button below to deploy to Heroku. Then all you have to do is setup the environment variables in the Settings pane.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nftchance/longtails&env[FREEMASONS_HOURS_PER_SYNC]=DEFAULT_VALUE&env[DISCORD_APPLICATION_ID]=DEFAULT_VALUE&env[DISCORD_TOKEN]=DEFAULT_VALUE&env[DISCORD_CHANNEL_NAME]=DEFAULT_VALUE&env[DISCORD_GUILD_NAME]=DEFAULT_VALUE&env[DISCORD_GUILD_ID]=DEFAULT_VALUE&env[TWITTER_SECRET_ACCESS_TOKEN]=DEFAULT_VALUE&env[TWITTER_ACCESS_TOKEN]=DEFAULT_VALUE&env[TWITTER_BEARER_TOKEN]=DEFAULT_VALUE&env[TWITTER_CONSUMER_API_SECRET_KEY]=DEFAULT_VALUE&env[TWITTER_CONSUMER_API_KEY]=DEFAULT_VALUE&env[MORALIS_API_KEY]=DEFAULT_VALUE)
 
 ### Running In Dev
 
