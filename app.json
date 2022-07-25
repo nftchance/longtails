@@ -59,6 +59,7 @@
 			"description": "Hours between sync of Free Mason collections.",
 			"value": 12
 		},
-		"PROD": true
+		"PROD": true,
+		"DISABLE_COLLECTSTATIC": 1
 	}
 }
