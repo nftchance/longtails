@@ -13,7 +13,20 @@ Longtails is focused on one thing, extracting maximum value from long-tail oppor
 
 ## Running The System
 
-## Inviting The Bot
+Longtails has a pretty broad scope and that means you need a few different API keys in order to fully power every piece of the machine.
+
+### Getting The Needed Keys
+
+By getting this core set of keys you will be able to update Longtails as new features are released without needing additional setup.
+
+* To get your keys for [Moralis](https://moralis.io/), pop on over to their webste and login and create an app. 
+
+* To get your keys for Twitter, you need to go to the [Developer Portal](https://developer.twitter.com/en).
+
+* To get your keys for Discord, you need to create a bot and get all the needed tokens from the [Developer Portal](https://discord.com/developers/docs/intro).
+
+
+### Inviting The Bot
 
 The communication system of Longtails is built on Discord. To get started, head to the Discord Developer portal and create the bot. Make sure that you give the bot permissions to a `bot` and `commands` like so:
 
@@ -29,8 +42,6 @@ Just copy and paste the generated url into your browser, and invite the bot your
 
 Longtails is designed to easily get up and running. Just click the button below to deploy to Heroku. Then all you have to do is setup the environment variables in the Settings pane.
 
-
-
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nftchance/longtails)
 
 ### Running In Dev
@@ -40,14 +51,6 @@ Want to make a few changes or don't want the system running forever? You can als
 #### Creating `.env`
 
 > Include in `example.env` is the fields you should add to `.env` if you want to run all functions of Longtails. This is the recomended usage as all pieces are built to work on top of each other.
-
-* To get your keys for [Moralis](https://moralis.io/), pop on over to their webste and login and create an app. 
-
-* To get your keys for Twitter, you need to go to the [Developer Portal](https://developer.twitter.com/en).
-
-* To get your keys for Discord, you need to create a bot and get all the needed tokens from the [Developer Portal](https://discord.com/developers/docs/intro).
-
-By getting this core set of keys you will be able to update Longtails as new features are released without needing additional setup.
 
 #### Installing Dependencies
 
