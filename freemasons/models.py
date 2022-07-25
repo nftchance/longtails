@@ -1,8 +1,6 @@
-import asyncio
 import datetime
 import django
 import requests
-import time
 
 from django.conf import settings
 from django.db import models
@@ -34,7 +32,7 @@ URLS = {
 }
 
 # 12 hours
-SECONDS_BETWEEN_SYNC = 60 * 60 * 12
+SECONDS_BETWEEN_SYNC = 60 * 60 * settings.FREEMASONS_HOURS_PER_SYNC
 
 
 class TwitterUser(models.Model):
@@ -97,9 +95,11 @@ class FreeMasonMember(models.Model):
 
     def handle_twitter_user(self, is_follower, twitter_user):
         if TwitterUser.objects.filter(twitter_identifier=twitter_user['id']).exists():
-            twitter_user_obj = TwitterUser.objects.filter(twitter_identifier=twitter_user['id']).first()
+            twitter_user_obj = TwitterUser.objects.filter(
+                twitter_identifier=twitter_user['id']).first()
         else:
-            twitter_user_obj = TwitterUser.objects.create(twitter_identifier=twitter_user['id'])
+            twitter_user_obj = TwitterUser.objects.create(
+                twitter_identifier=twitter_user['id'])
 
         if twitter_user_obj.name != twitter_user['name'] or twitter_user_obj.username != twitter_user['username']:
             twitter_user_obj.name = twitter_user['name']
@@ -130,7 +130,8 @@ class FreeMasonMember(models.Model):
         for i, twitter_user in enumerate(followers + following):
             self.handle_twitter_user(i < len(followers), twitter_user)
 
-        self.next_sync_at = django.utils.timezone.now() + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
+        self.next_sync_at = django.utils.timezone.now(
+        ) + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
 
         self.save()
 
@@ -195,7 +196,7 @@ class FreeMasonProject(models.Model):
 
     async def sync(self):
         response = requests.get(URLS["DETAILS"].format(self.contract_address))
-        
+
         if response.status_code == 200:
             response_data = response.json()
 
@@ -225,9 +226,11 @@ class FreeMasonProject(models.Model):
             self.members.clear()
             for i, member in enumerate(members):
                 if TwitterUser.objects.filter(twitter_identifier=member_twitter_ids[i]['id']).exists():
-                    member_twitter_obj = TwitterUser.objects.filter(twitter_identifier=member_twitter_ids[i]['id']).first()
+                    member_twitter_obj = TwitterUser.objects.filter(
+                        twitter_identifier=member_twitter_ids[i]['id']).first()
                 else:
-                    member_twitter_obj = TwitterUser.objects.create(twitter_identifier=member_twitter_ids[i]['id'])
+                    member_twitter_obj = TwitterUser.objects.create(
+                        twitter_identifier=member_twitter_ids[i]['id'])
 
                 member_twitter_obj.name = member['name']
                 member_twitter_obj.username = member['username']
@@ -241,7 +244,8 @@ class FreeMasonProject(models.Model):
 
                 self.members.add(member_obj)
 
-            self.next_sync_at = django.utils.timezone.now() + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
+            self.next_sync_at = django.utils.timezone.now(
+            ) + datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC)
 
             self.save()
 
