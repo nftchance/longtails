@@ -31,13 +31,15 @@ class Cooltopia(commands.Cog):
 
         required_items = handle_scrape()
 
+        print(f'[Cooltopia] [Required Items] {required_items}')
+
         embed = discord.Embed(
             title=f"[Cooltopia] Required Items",
             description="This is the summary of the required items that will be used for boss battles within Cooltopia."
         )
 
         for i, item in enumerate(required_items):
-            embed.add_field(name=f"Item #{i}", value=f"ID {item}")
+            embed.add_field(name=f"Item #{i}", value=f"ID {item}", inline=False)
 
         await self.longtails_channel.send(embed=embed)
 
