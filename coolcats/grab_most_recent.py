@@ -1,11 +1,7 @@
-import datetime
 import re
 import requests
 
 def handle_scrape():
-    path = 'coolcats/scrapes/'
-    now = datetime.datetime.now()
-
     # grab the most recent state of the CC scripts
     response = requests.get("https://www.coolcatsnft.com/static/js/main.addc33d3.js")
 
