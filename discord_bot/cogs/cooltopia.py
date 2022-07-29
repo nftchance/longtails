@@ -26,7 +26,7 @@ class Cooltopia(commands.Cog):
         print('[Cooltopia] Online.')
 
     @tasks.loop(minutes=60 * 6)
-    async def sync_projects(self):
+    async def sync_required_items(self):
         print("[Cooltopia] [Sync] Clock.")
 
         required_items = handle_scrape()
