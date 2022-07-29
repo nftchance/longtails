@@ -39,7 +39,7 @@ class Cooltopia(commands.Cog):
         )
 
         for i, item in enumerate(required_items):
-            embed.add_field(name=f"Item #{i}", value=f"ID {item}", inline=False)
+            embed.add_field(name=f"Item #{i + 1}", value=f"ID {item}", inline=False)
 
         await self.longtails_channel.send(embed=embed)
 
