@@ -25,6 +25,7 @@ class DiscordClient(commands.Bot):
 
     async def setup_hook(self):
         await self.load_extension(f'discord_bot.cogs.freemasons')
+        await self.load_extension(f'discord_bot.cogs.cooltopia')
         await discord_client.tree.sync(guild=discord.Object(id=settings.DISCORD_GUILD_ID))
 
     async def on_ready(self):
