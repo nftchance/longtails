@@ -158,7 +158,7 @@ class FreeMasons(commands.Cog):
             following__in=[twitter_user_obj.first(), ])
 
         description = "\n".join(
-            [f"[{member_inst.username}](https://twitter.com/i/user/{member_inst.twitter_identifier})" for member_inst in members.all()])
+            [f"[{member_inst.twitter.username}](https://twitter.com/i/user/{member_inst.twitter.twitter_identifier})" for member_inst in members.all()])
 
         # return output
         embed = discord.Embed(
