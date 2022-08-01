@@ -160,9 +160,6 @@ class FreeMasons(commands.Cog):
         description = "\n".join(
             [f"[{member_inst.username}](https://twitter.com/i/user/{member_inst.twitter_identifier})" for member_inst in members.all()])
 
-        if members.count() > 50:
-            description += f"\nAnd {members.count() - 50} others."
-
         # return output
         embed = discord.Embed(
             title=f"[Watching] Free Mason Members Following {twitter_username}",
