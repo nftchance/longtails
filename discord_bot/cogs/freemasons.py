@@ -137,7 +137,7 @@ class FreeMasons(commands.Cog):
 
     @app_commands.command(name="watched")
     async def watched(self, interaction: discord.Interaction, twitter_username: str) -> None:
-        await interaction.response.send_message("Grabbing the data that we have for that username.")
+        await interaction.response.send_message("Grabbing the data that we have for that username.", ephemeral=True)
 
         # get twitter object of username we are searching
         twitter_user_obj = TwitterUser.objects.filter(
