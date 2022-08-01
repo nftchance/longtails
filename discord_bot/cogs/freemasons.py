@@ -155,7 +155,7 @@ class FreeMasons(commands.Cog):
 
         # find members that are following that user
         members = FreeMasonMember.objects.filter(
-            following__in=[twitter_user_obj, ])
+            following__in=[twitter_user_obj.first(), ])
 
         description = "\n".join(
             [f"[{member_inst.username}](https://twitter.com/i/user/{member_inst.twitter_identifier})" for member_inst in members.all()])
