@@ -157,10 +157,8 @@ class FreeMasons(commands.Cog):
         members = FreeMasonMember.objects.filter(
             following__in=[twitter_user_obj, ])
 
-        members = members.all().values('twitter_identifier', 'username').distinct()
-
         description = "\n".join(
-            [f"[{member_inst.username}](https://twitter.com/i/user/{member_inst.twitter_identifier})" for member_inst in members.all()[:50]])
+            [f"[{member_inst.username}](https://twitter.com/i/user/{member_inst.twitter_identifier})" for member_inst in members.all()])
 
         if members.count() > 50:
             description += f"\nAnd {members.count() - 50} others."
