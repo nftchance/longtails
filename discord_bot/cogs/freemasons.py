@@ -146,7 +146,7 @@ class FreeMasons(commands.Cog):
         # return no data message if we don't have this user in the database
         if not twitter_user_obj.exists():
             embed = discord.Embed(
-                title=f"[Watching] No Data Found For {twitter_username}",
+                title=f"[FreeMasons] Never scraped {twitter_username}",
             )
 
             await self.longtails_channel.send(embed=embed)
@@ -156,6 +156,17 @@ class FreeMasons(commands.Cog):
         # find members that are following that user
         members = FreeMasonMember.objects.filter(
             following__in=[twitter_user_obj.first(), ])
+
+        if members.count() == 0:
+            # return no data message if we don't have this user in the database
+            if not twitter_user_obj.exists():
+                embed = discord.Embed(
+                    title=f"[FreeMasons] {twitter_username} is not a hot follow.",
+                )
+
+                await self.longtails_channel.send(embed=embed)
+
+                return 
 
         description = "\n".join(
             [f"[{member_inst.twitter.username}](https://twitter.com/i/user/{member_inst.twitter.twitter_identifier})" for member_inst in members.all()])
