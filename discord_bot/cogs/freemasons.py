@@ -155,7 +155,7 @@ class FreeMasons(commands.Cog):
 
         # find members that are following that user
         members = FreeMasonMember.objects.filter(
-            following__in=[twitter_user_obj.first(), ])
+            following__in=[twitter_user_obj.first(), ]).exclude(twitter__username__isnull=True).exclude(twitter__twitter_identifier__isnull=True)
 
         if members.count() == 0:
             # return no data message if we don't have this user in the database
