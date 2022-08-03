@@ -25,7 +25,7 @@ class Cooltopia(commands.Cog):
         self.sync_required_items.start()
         print('[Cooltopia] Online.')
 
-    @tasks.loop(minutes=60 * 6)
+    @tasks.loop(minutes=60 * 12)
     async def sync_required_items(self):
         print("[Cooltopia] [Sync] Clock.")
 
@@ -35,7 +35,6 @@ class Cooltopia(commands.Cog):
 
         embed = discord.Embed(
             title=f"[Cooltopia] Required Items",
-            description="This is the summary of the required items that will be used for boss battles within Cooltopia."
         )
 
         for i, item in enumerate(required_items):

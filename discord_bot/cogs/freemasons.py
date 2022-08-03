@@ -36,7 +36,7 @@ class FreeMasons(commands.Cog):
 
     async def send_summary(self, title_key, project_obj, summary):
         embed = discord.Embed(
-            title=f"[{title_key}] {project_obj.name}",
+            title=f"[FreeMasons] [{title_key}] [{project_obj.name}]",
             description="\n".join(
                 [f"[{member_inst['username']}](https://twitter.com/i/user/{member_inst['twitter_identifier']}): {member_inst['count']}" for member_inst in summary])
         )
@@ -61,18 +61,12 @@ class FreeMasons(commands.Cog):
                 print(
                     f'[FreeMasons] [Sync] [Project] {project_obj.contract_address}')
                 embed = discord.Embed(
-                    title=f"[SYNCING] {project_obj.name}"
+                    title=f"[FreeMasons] [Sync] [{project_obj.name}]"
                 )
 
                 embed.add_field(
-                    name="CONTRACT",
+                    name="Contract address",
                     value=project_obj.contract_address
-                )
-
-                embed.add_field(
-                    name="STATUS",
-                    value="STARTING",
-                    inline=False
                 )
 
                 await self.longtails_channel.send(embed=embed)
@@ -109,12 +103,12 @@ class FreeMasons(commands.Cog):
         project_obj.save()
 
         embed = discord.Embed(
-            title=f"[Watching] {project_obj.name}"
+            title=f"[FreeMasons] [Watching] [{project_obj.name}]"
         )
 
-        embed.add_field(name="CONTRACT", value=contract_address)
+        embed.add_field(name="Contract address", value=contract_address)
         embed.add_field(
-            name="WATCHING",
+            name="Watching",
             value="✅" if project_obj.watching else "❌",
             inline=False
         )
@@ -128,7 +122,7 @@ class FreeMasons(commands.Cog):
         projects = FreeMasonProject.objects.filter(watching=True)
 
         embed = discord.Embed(
-            title=f"[Watching] Summary",
+            title=f"[FreeMasons] [Watching] [Projects]",
             description="\n".join(
                 f"[{project_obj.name}]({project_obj.twitter})" for project_obj in projects.all())
         )
@@ -157,23 +151,22 @@ class FreeMasons(commands.Cog):
         members = FreeMasonMember.objects.filter(
             following__in=[twitter_user_obj.first(), ]).exclude(twitter__username__isnull=True).exclude(twitter__twitter_identifier__isnull=True)
 
-        if members.count() == 0:
-            # return no data message if we don't have this user in the database
-            if not twitter_user_obj.exists():
-                embed = discord.Embed(
-                    title=f"[FreeMasons] {twitter_username} is not a hot follow.",
-                )
-
-                await self.longtails_channel.send(embed=embed)
-
-                return 
-
         description = "\n".join(
             [f"[{member_inst.twitter.username}](https://twitter.com/i/user/{member_inst.twitter.twitter_identifier})" for member_inst in members.all()])
 
+        if members.count() == 0 or description == "":
+            # return no data message if we don't have this user in the database
+            embed = discord.Embed(
+                title=f"[FreeMasons] {twitter_username} is not a hot follow.",
+            )
+
+            await self.longtails_channel.send(embed=embed)
+
+            return 
+
         # return output
         embed = discord.Embed(
-            title=f"[Watching] Free Mason Members Following {twitter_username}",
+            title=f"[FreeMasons] [Watching] [Follower Of] {twitter_username}",
             description=description
         )
 
