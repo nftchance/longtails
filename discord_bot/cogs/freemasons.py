@@ -82,7 +82,7 @@ class FreeMasons(commands.Cog):
 
             if not project_obj.last_summarized_at or project_obj.last_summarized_at < django.utils.timezone.now() - datetime.timedelta(seconds=SECONDS_BETWEEN_SYNC):
                 await self.send_summary('Followed By', project_obj, project_obj.member_following_summary[:50])
-                await self.send_summary('Follower Of', project_obj, project_obj.member_follower_summary[:50])
+                # await self.send_summary('Follower Of', project_obj, project_obj.member_follower_summary[:50])
 
                 project_obj.last_summarized_at = django.utils.timezone.now()
                 project_obj.save()
