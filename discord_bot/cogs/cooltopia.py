@@ -29,18 +29,21 @@ class Cooltopia(commands.Cog):
     async def sync_required_items(self):
         print("[Cooltopia] [Sync] Clock.")
 
-        required_items = handle_scrape()
+        boss_battles = handle_scrape()
 
-        print(f'[Cooltopia] [Required Items] {required_items}')
+        for boss_battle in boss_battles:
+            embed = discord.Embed(
+                title=f"[Cooltopia] [Boss Battle] {boss_battle['bosses'][0]['name']}",
+            )
 
-        embed = discord.Embed(
-            title=f"[Cooltopia] Required Items",
-        )
+            embed.add_field(name="Live", value=boss_battle['live'], inline=False)
+            embed.add_field(name="Location", value=boss_battle['name'], inline=False)
 
-        for i, item in enumerate(required_items):
-            embed.add_field(name=f"Item #{i + 1}", value=f"ID {item}", inline=False)
+            embed.add_field(name="Required Items", value="\n".join(set(f"Item #{item}" for item in boss_battle['bosses'][0]['requiredItems'])), inline=False)
 
-        await self.longtails_channel.send(embed=embed)
+            embed.set_image(url=boss_battle['image'])
+
+            await self.longtails_channel.send(embed=embed)
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(

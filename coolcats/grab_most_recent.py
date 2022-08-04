@@ -1,17 +1,21 @@
+import json
 import re
 import requests
 
 def handle_scrape():
     # grab the most recent state of the CC scripts
-    response = requests.get("https://www.coolcatsnft.com/static/js/main.af2a44c1.js")
+    response = requests.get("https://www.coolcatsnft.com/static/js/main.427d1d16.js")
 
     # return regex
     required_item_instances = [x.group() for x in re.finditer(
-        r'\"requiredItems\":\[.*?]', 
+        r'o=JSON.parse\(.*?\)', 
         response.text
     )]
 
-    required_item_instances = [item.replace('"requiredItems":', "").replace("[", "").replace("]", "").split(",") for item in required_item_instances]
-    required_item_instances = [int(item) for sublist in required_item_instances for item in sublist]
 
-    return [*set(required_item_instances)]
+    required_item_instances = ["""o = JSON.parse('[{"name":"Clumping Deserts","description":"<p>The sun looms over the desert during the day, causing an unbearable heat that reflects off the rolling sands. Water and vegetation is hard to find here, except for the odd grouping of Cacti and Ficus.</p>\\n<p>Due to the severe temperatures and lack of water the clumping desert is a harsh place to live. It is home to few creatures who either require little water or have enough ingenuity to find it.</p>\\n<p>Furnados rage this land, causing huge sandstorms that make it impossible to navigate the rolling sands.</p>\\n","live":true,"image":"https://content.coolcatsnft.com/wp-content/uploads/2022/07/location.jpg","bosses":[{"id":"65","name":"Sand Golem","image":"https://content.coolcatsnft.com/wp-content/uploads/2022/07/sand-golem.png","jsonUrl":"/assets/spine/boss-quests/SandGolem/SandGolem.json","atlasUrl":"/assets/spine/boss-quests/SandGolem/SandGolem.atlas","price":"2000","requiredItems":[50,50,50,3],"styleOverrides":"","live":true,"partySize":1,"challenge":"rockPaperScissor","rewards":["65","66","67"]}]},{"name":"Flower Forest","description":"<p><span style=\\"font-weight: 400;\\">Stepping into the Flower Forest feels like a completely different world. The large canopy envelopes everything within and blocks the noise from outside the forest.</span></p>\\n<p><span style=\\"font-weight: 400;\\">An abundance of lush vegetation cloaks the forest floor, fighting for space beneath the broken light as it creeps through the entwined branches above m</span><span style=\\"font-weight: 400;\\">assive trees occupy huge areas of the forest and their roots spread chaotically throughout, some even arching up and over the path that has been</span> <span style=\\"font-weight: 400;\\">trodden</span> <span style=\\"font-weight: 400;\\">for centuries.</span></p>\\n<p><span style=\\"font-weight: 400;\\">The Flower Forest feels alive, almost like it is constantly moving, while thousands of inhabitants dart around, back and forth from their dens and tunnels.</span></p>\\n","live":false,"image":"https://content.coolcatsnft.com/wp-content/uploads/2022/08/Flower-Forest.png","bosses":[{"id":"68","name":"Angry Bloom","image":"https://content.coolcatsnft.com/wp-content/uploads/2022/08/Boss-AngryBloom.png","jsonUrl":"/assets/spine/boss-quests/AngryBloom/AngryBloom.json","atlasUrl":"/assets/spine/boss-quests/AngryBloom/AngryBloom.atlas","price":"5000","requiredItems":[40,56,56],"styleOverrides":"","live":false,"partySize":1,"challenge":"rockPaperScissor","rewards":["68","69","70"]}]},{"name":"Dusty Temple","description":"<p>Centuries old and shrouded by swirling sandy winds, the Dusty Temple is a place of great mystery and wonder.</p>\\n<p>Situated in the south western valley of The Clumping Desert and carved into the face of the dusty limestone the temple is rumored to contain many ancient tombs, where mummified cats lie in peculiar looking sarcophaguses waiting to be discovered.</p>\\n<p>Many have ventured here in the past attempting to uncover the mysteries the temple conceals, but due to its inaccessible location and hostile environment it remains largely unexplored to this day.</p>\\n","live":false,"image":"https://content.coolcatsnft.com/wp-content/uploads/2022/07/location-1.jpg","bosses":[{"id":"71","name":"Ancient Cat Spirit","image":"https://content.coolcatsnft.com/wp-content/uploads/2022/07/dusty-temple-boss.png","jsonUrl":"/assets/spine/boss-quests/AncientCatSpirit/AncientCatSpirit.json","atlasUrl":"/assets/spine/boss-quests/AncientCatSpirit/AncientCatSpirit.atlas","price":"10000","requiredItems":[65,68,60,60,60,34],"styleOverrides":"","live":false,"partySize":1,"challenge":"ticTacToe","rewards":["71","72","73"]}]}]')""",]
+
+    boss_battles = required_item_instances[0].replace(" ", "").replace("o=JSON.parse('", "")[:-2]
+    boss_battles = json.loads(boss_battles)
+
+    return boss_battles
