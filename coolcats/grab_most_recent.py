@@ -3,7 +3,7 @@ import requests
 
 def handle_scrape():
     # grab the most recent state of the CC scripts
-    response = requests.get("https://www.coolcatsnft.com/static/js/main.addc33d3.js")
+    response = requests.get("https://www.coolcatsnft.com/static/js/main.af2a44c1.js")
 
     # return regex
     required_item_instances = [x.group() for x in re.finditer(

@@ -1,0 +1,34 @@
+#tokens {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px;
+}
+
+.token-image {
+    display: block;
+    width: 250px;
+    height: 250px;
+    margin: 5px;
+}
+.token-image > img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.token-traits {
+    display: block;
+}
+.card {
+    display: block;
+    background-color: lightgray;
+}
+p {
+    margin: 0;
+}
+.btn {
+    text-align: center;
+}
+button {
+    width: 10%;
+    margin: auto;
+}

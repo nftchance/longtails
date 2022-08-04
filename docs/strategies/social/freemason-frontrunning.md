@@ -14,6 +14,7 @@ There is profit to capture from VCs that have more wealth than sense. Turn the t
 - [x] Keep track of the new accounts that they follow
 - [x] Build a summary of newly followed accounts
 - [x] Output the list of the most recent follow(er)s summary
+- [x] Check to see who follows a specific user.
 
 ## Functions
 
