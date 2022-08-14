@@ -10,6 +10,8 @@
 		"longtail",
 		"mev"
 	],
+	"image": "heroku/python",
+	"addons": [ "heroku-postgresql" ],
 	"env": {
 		"MORALIS_API_KEY": { 
 			"description": "Key used to connect to Moralis.",
