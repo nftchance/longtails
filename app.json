@@ -15,7 +15,63 @@
 		"heroku-postgresql"
 	],
 	"env": {
-		"DJANGO_SETTINGS_MODULE": "longtails.settings"
+		"DJANGO_SETTINGS_MODULE": "longtails.settings",
+		"MORALIS_API_KEY": {
+			"description": "Key used to connect to Moralis.",
+			"value": ""
+		},
+		"TWITTER_CONSUMER_API_KEY": {
+			"description": "Consumer API key of Twitter app.",
+			"value": ""
+		},
+		"TWITTER_CONSUMER_API_SECRET_KEY": {
+			"description": "Consumer API secret key of Twitter app.",
+			"value": ""
+		},
+		"TWITTER_BEARER_TOKEN": {
+			"description": "Bearer token used for Twitter app requests.",
+			"value": ""
+		},
+		"TWITTER_ACCESS_TOKEN": {
+			"description": "Token that enables programatic access.",
+			"value": ""
+		},
+		"TWITTER_SECRET_ACCESS_TOKEN": {
+			"description": "That that enables secure programatic access..",
+			"value": ""
+		},
+		"DISCORD_GUILD_ID": {
+			"description": "ID of the Discord Guild used for notification.",
+			"value": ""
+		},
+		"DISCORD_GUILD_NAME": {
+			"description": "Name of the Discord Guild used to control Longtails.",
+			"value": ""
+		},
+		"DISCORD_CHANNEL_NAME": {
+			"description": "Channel where Longtail usage logs are shared.",
+			"value": ""
+		},
+		"DISCORD_TOKEN": {
+			"description": "Discord bot token gained through the Discord Developer Portal.",
+			"value": ""
+		},
+		"DISCORD_APPLICATION_ID": {
+			"description": "The application id of the bot you created for Longtails.",
+			"value": ""
+		},
+		"FREEMASONS_HOURS_PER_SYNC": {
+			"description": "Hours between sync of Free Mason collections.",
+			"value": "12"
+		},
+		"PROD": {
+			"description": "Controls usage of database. (Leave as true.)",
+			"value": "true"
+		},
+		"DISABLE_COLLECTSTATIC": {
+			"description": "Keeps your server from storing things not needed. (Leave as 1.)",
+			"value": "1"
+		}
 	},
 	"buildpacks": [
 		{
