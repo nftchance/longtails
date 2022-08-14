@@ -78,5 +78,11 @@
 			"url": "https://github.com/heroku/heroku-buildpack-python.git"
 		}
 	],
-	"success_url": "/"
+	"success_url": "/",
+	"formation": {
+		"freemason_worker": {
+			"quantity": 1,
+			"size": "standard-1x"
+		}
+	}
 }
