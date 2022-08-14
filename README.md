@@ -9,6 +9,7 @@ Longtails is focused on one thing, extracting maximum value from long-tail oppor
 ## Implemented Strategies
   
 - [x] Free Mason Stalking
+- [x] Cool Cats (Cooltopia) Boss Items (Assymetric Knowledge Frontrunning)
 - [ ] 0xSplits Distributor
 
 ## Running The System
